@@ -27,7 +27,7 @@ public class ProducerWithKey {
          */
         for(int i=0; i<=2; i++){
             // instantiate record
-            ProducerRecord<String,String> record = new ProducerRecord<>("key_partitioner", "id_" + i,"Record with key");
+            ProducerRecord<String,String> record = new ProducerRecord<>("key_partitioner_topic", "id_" + i,"Record with key");
 
             // i.e. - send 3 records in batch
             producer.send(record, new Callback() {

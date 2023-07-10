@@ -25,7 +25,7 @@ public class ProducerStickyPartition {
         for(int j=0; j<=5; j++) {
             for (int i = 0; i <= 5; i++) {
                 ProducerRecord<String, String> producerRecord =
-                        new ProducerRecord<>("sticky_partitioner", "sticky partiontion - " + i);
+                        new ProducerRecord<>("sticky_partitioner_topic", "sticky partiontion - " + i);
                 kafkaProducer.send(producerRecord, new Callback() {
                     @Override
                     public void onCompletion(RecordMetadata recordMetadata, Exception e) {

@@ -18,7 +18,7 @@ public class ProducerCallbackDemo {
         // instantiate kafka producer
         KafkaProducer<String, String> producer = new KafkaProducer<String, String>(prop);
         // instantiate kafka record
-        ProducerRecord<String,String> record = new ProducerRecord<String,String>("first_topic","Callback Record");
+        ProducerRecord<String,String> record = new ProducerRecord<String,String>("callback_demo_topic","Callback Record");
         // send on the topic
         producer.send(record, new Callback() {
             @Override
