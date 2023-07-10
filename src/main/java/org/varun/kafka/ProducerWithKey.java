@@ -31,6 +31,7 @@ public class ProducerWithKey {
             System.out.println(key);
             ProducerRecord<String,String> record = new ProducerRecord<>("first_topic", String.valueOf( "id_"+ key),"Record with key");
             // send - we are using get() to make it synchronous, i.e. to block send()
+            // i.e. - send 3 records in batch
             try {
                 producer.send(record, new Callback() {
                     @Override
