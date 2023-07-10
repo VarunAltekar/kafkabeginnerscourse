@@ -15,17 +15,17 @@ public class ProducerStickyPartition {
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
-        properties.setProperty(ProducerConfig.BATCH_SIZE_CONFIG, "400");
+        //properties.setProperty(ProducerConfig.BATCH_SIZE_CONFIG, "400");
 
         // 2. instantiate kafka producer
         KafkaProducer<String, String> kafkaProducer = new KafkaProducer<String, String>(properties);
 
-        // 5 batches with 5 records per batch
-        // each batch will go to same partition
+        // 6 batches with 6 records per batch
+        // 2 batch will go to same partition
         for(int j=0; j<=5; j++) {
             for (int i = 0; i <= 5; i++) {
                 ProducerRecord<String, String> producerRecord =
-                        new ProducerRecord<>("first_topic", "sticky partiontion - " + i);
+                        new ProducerRecord<>("sticky_partitioner", "sticky partiontion - " + i);
                 kafkaProducer.send(producerRecord, new Callback() {
                     @Override
                     public void onCompletion(RecordMetadata recordMetadata, Exception e) {

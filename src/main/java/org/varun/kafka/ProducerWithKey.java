@@ -27,34 +27,25 @@ public class ProducerWithKey {
          */
         for(int i=0; i<=2; i++){
             // instantiate record
-            int key = random.nextInt(2);
-            System.out.println(key);
-            ProducerRecord<String,String> record = new ProducerRecord<>("first_topic", String.valueOf( "id_"+ key),"Record with key");
-            // send - we are using get() to make it synchronous, i.e. to block send()
-            // i.e. - send 3 records in batch
-            try {
-                producer.send(record, new Callback() {
-                    @Override
-                    public void onCompletion(RecordMetadata recordMetadata, Exception e) {
-                        if(e == null){
-                            System.out.println( "record posted to topic : " + recordMetadata.topic());
-                            System.out.println( "record posted to partition : " + recordMetadata.partition());
-                            System.out.println( "record posted to topic : " + recordMetadata.offset());
-                        }
-                        else{
-                            e.printStackTrace();
-                        }
-                    }
-                }).get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-            //flush
-            producer.flush();
+            ProducerRecord<String,String> record = new ProducerRecord<>("key_partitioner", "id_" + i,"Record with key");
 
+            // i.e. - send 3 records in batch
+            producer.send(record, new Callback() {
+                @Override
+                public void onCompletion(RecordMetadata recordMetadata, Exception e) {
+                    if(e == null){
+                        System.out.println( "record posted to topic : " + recordMetadata.topic());
+                        System.out.println( "record posted to partition : " + recordMetadata.partition());
+                        System.out.println( "record posted to topic : " + recordMetadata.offset());
+                    }
+                    else{
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
+        //flush
+        producer.flush();
         producer.close();
 
     }
