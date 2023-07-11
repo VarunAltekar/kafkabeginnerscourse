@@ -26,7 +26,7 @@ public class ConsumerDemo {
         KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(prop);
 
         // subscribe consumer to topic
-        consumer.subscribe(Collections.singleton("first_topic"));
+        consumer.subscribe(Collections.singleton("demo_topic"));
 
         // poll
         while(true){
