@@ -3,6 +3,7 @@ package org.varun.kafka;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.protocol.types.Field;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
@@ -22,12 +23,35 @@ public class ConsumerDemoWithShutdown {
 
         KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<String, String>(properties);
 
-        kafkaConsumer.subscribe(Collections.singleton(""));
+        final Thread thread = Thread.currentThread();
 
-        while(true){
-            ConsumerRecords<String, String> consumerRecords = kafkaConsumer.poll(Duration.ofMillis(100));
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run(){
+                kafkaConsumer.wakeup();
 
+                try {
+                    thread.join();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
+        try{
+            kafkaConsumer.subscribe(Collections.singleton(""));
+            while (true){
+                ConsumerRecords<String, String> consumerRecords = kafkaConsumer.poll(Duration.ofMillis(100));
+                consumerRecords.forEach(r -> {
+                    System.out.println(r.partition());
+                    System.out.println(r.topic());
+                });
+            }
+        }catch (WakeupException wakeupException){
+            System.out.println(wakeupException);
+        }catch (Exception e){
+
+        }finally {
+            kafkaConsumer.close();
         }
     }
 }
